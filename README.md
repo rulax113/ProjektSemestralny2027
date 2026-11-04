@@ -33,3 +33,6 @@ Na razie powyższe funkcje są planem, a nie gotową funkcjonalnością. Zakres 
 - [Architektura](docs/architecture.md)
 - [Plan kolejnych etapów](docs/plan.md)
 - Sprawozdania: `reports/`
+## Zrzut ekranu
+
+![Ekran startowy RunningDiary](docs/images/running-diary-home.png)
