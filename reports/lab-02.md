@@ -5,8 +5,8 @@
 **Projekt biznesowy:** MOB-012 — RunningDiary
 **Framework:** React Native + Expo + TypeScript 
 **Data zajęć:** [05.11.2026]  
-**Repozytorium:** [(https://github.com/rulax113/ProjektSemestralny2027.git)]  
-**Commit / tag odpowiadający oddaniu:** [hash / tag]
+**Repozytorium:** [github.com/rulax113/ProjektSemestralny2027](https://github.com/rulax113/ProjektSemestralny2027)  
+**Commit / tag odpowiadający oddaniu:** [`cd60fb6`](https://github.com/rulax113/ProjektSemestralny2027/commit/cd60fb6c146d36fc17714d4ec13a77efc0e3cac5) (ostatni commit z kodem laboratorium 2); finalny commit z dokumentacją lub merge PR: []
 
 > Wypełnij na podstawie własnych działań. Odpowiedzi powinny zawierać dowody (pliki, commity, PR, wyniki uruchomienia), nie same deklaracje.
 
@@ -22,7 +22,7 @@
 | -------------------- | -------------------------------- | ------- |
 | W1: Formularze, listy i nawigacja (FR-01–FR-09 w MOB-012: dodawanie, lista, szczegóły, wyszukiwanie, filtrowanie, sortowanie, komunikaty błędów) | Aplikacja składa się głównie z ekranów, formularzy i list z walidacją. Potrzebuję gotowych elementów interfejsu telefonu i nawigacji między ekranami | Technologia z gotowymi komponentami UI i nawigacją, najlepiej w języku, który znam |
 | W2: Trwały zapis lokalny bez backendu (FR-11, zakres: jedna osoba, dane lokalne) | Dane mają zostać po zamknięciu aplikacji i być tylko na telefonie. Potrzebuję lokalnego magazynu dostępnego z kodu aplikacji | Technologia z dostępnym lokalnym magazynem. W Expo sprawdziłem go w praktyce (AsyncStorage) |
-| W3: Jedna aplikacja na iPhone'a i Androida, realizowana w semestrze samodzielnie na Windowsie (wymaganie niefunkcjonalne) | Piszę sam, w ograniczonym czasie, na Windows 11, a testuję na iPhonie. Dwie osobne aplikacje oznaczałyby dwa razy więcej pracy | Jedna baza kodu, szybkie uruchamianie na telefonie bez budowania aplikacji, język TypeScript |
+| W3: Jedna aplikacja na iPhone'a i Androida, realizowana w semestrze samodzielnie na Windowsie (wymaganie niefunkcjonalne) | Piszę na Windows 11, a testuję na iPhonie. Dwie osobne aplikacje oznaczałyby dwa razy więcej pracy | Jedna baza kodu, szybkie uruchamianie na telefonie bez budowania aplikacji, język TypeScript |
 
 **Porównanie podejść i uzasadnienie:**
 
@@ -61,7 +61,10 @@ Dodaj diagram (np. Mermaid w Markdown lub obraz w `docs/diagrams/`) przedstawiaj
 
 **Diagram / odnośnik:**
 
-[uzupełnij]
+Diagram architektury (ekrany, stan, domena, dostęp do danych, lokalny zapis i kierunek przepływu) jest w pliku [docs/architecture.md](../docs/architecture.md).
+
+Krótko: ekrany ([`src/screens`](../src/screens), nawigacja w [`src/navigation`](../src/navigation)) rozmawiają tylko z hookiem `useDiary()` ze stanu aplikacji ([`src/state/DiaryContext.tsx`](../src/state/DiaryContext.tsx)). Stan sprawdza dane regułami z [`src/domain`](../src/domain), a odczyt i zapis wykonuje przez [`src/data`](../src/data), które zapisuje JSON w AsyncStorage na telefonie.Diagram architektury (ekrany, stan, domena, dostęp do danych, lokalny zapis i kierunek przepływu) jest w pliku [docs/architecture.md](../docs/architecture.md).
+
 
 ### T2.2. Model danych
 
@@ -86,14 +89,14 @@ Jedna trasa ma wiele biegów (`Run.parentId` wskazuje `Route.id`). Funkcja `vali
 
 | Decyzja | Wybrane rozwiązanie | Alternatywa | Uzasadnienie |
 | ------- | ------------------- | ----------- | ------------ |
-| Zarządzanie stanem | [uzupełnię po etapie ] | [uzupełnię po etapie ] | [uzupełnię po etapie ] |
+| Zarządzanie stanem | React Context i własny hook `useDiary()` (`src/state/DiaryContext.tsx`) | Zustand, brak wspólnego stanu | Nie dodaje żadnej biblioteki. Ekrany znają tylko hook, a nie zapis. Po dodaniu biegu lista odświeża się sama |
 | Przechowywanie danych | AsyncStorage (`@react-native-async-storage/async-storage`) | expo-sqlite, expo-file-system | Dane są małe i lokalne, API jest proste, biblioteka jest dostępna w Expo Go. Spójność trasa ↔ bieg sprawdza kod aplikacji, nie baza |
-| Nawigacja | [uzupełnię po etapie ] | [uzupełnię po etapie ] | [uzupełnię po etapie ] |
+| Nawigacja | React Navigation (native stack) | Expo Router, nawigacja bez biblioteki | Pasuje do obecnej struktury projektu (`App.tsx` plus `src/`), nie wymaga przebudowy projektu, daje na iPhonie przycisk wstecz i gest cofania |
 | Separacja logiki od UI | Osobne warstwy: `src/domain` (modele i walidacja), `src/data` (repozytorium z interfejsem `DiaryRepository`) | Logika bezpośrednio w ekranach | Ekrany nie wiedzą, jak dane są zapisane, więc magazyn można zmienić bez zmian w ekranach |
 
 Identyfikatory UUID generuje `randomUUID()` z `expo-crypto`, w pliku `src/data/id.ts`.
 
-**Plik `docs/architecture.md`:** [link do pliku]
+**Plik `docs/architecture.md`: **Plik `docs/architecture.md`:** [docs/architecture.md](../docs/architecture.md)
 
 ## T3. Nawigacja i ekrany
 
@@ -107,18 +110,27 @@ Zaimplementuj minimum trzy ekrany:
 
 **Schemat nawigacji:**
 
-[diagram / opis]
+```mermaid
+flowchart LR
+  RunList["RunList: lista biegów"] -->|"dotknięcie karty (runId)"| RunDetails["RunDetails: szczegóły biegu"]
+  RunList -->|"przycisk Dodaj bieg"| RunForm["RunForm: formularz"]
+  RunDetails -->|cofnięcie| RunList
+  RunForm -->|"cofnięcie lub OK po poprawnych danych"| RunList
+```
 
-| Ekran     | Plik / komponent | Przejście do / z ekranu | Dowód działania |
-| --------- | ---------------- | ----------------------- | --------------- |
-| Lista     | [ ]              | [ ]                     | [zrzut]         |
-| Szczegóły | [ ]              | [ ]                     | [zrzut]         |
-| Formularz | [ ]              | [ ]                     | [zrzut]         |
+| Ekran | Plik / komponent | Przejście do / z ekranu | Dowód działania |
+| ----- | ---------------- | ----------------------- | --------------- |
+| Lista | `src/screens/RunListScreen.tsx` | do Szczegółów (dotknięcie karty) i do Formularza (przycisk "Dodaj bieg") | ![Lista biegów](assets/lab-02/lista.png) |
+| Szczegóły | `src/screens/RunDetailsScreen.tsx` | z Listy, cofnięcie wraca na Listę | ![Szczegóły biegu](assets/lab-02/szczegoly.png) |
+| Formularz | `src/screens/RunFormScreen.tsx` | z Listy, cofnięcie wraca na Listę | ![Formularz z błędami walidacji](assets/lab-02/formularz.png) |
+
+Nawigacja jest zbudowana w `src/navigation/AppNavigator.tsx` (React Navigation, stos natywny), a typy ekranów i przekazywanych danych w `src/navigation/types.ts`. Szczegóły dostają `runId`, czyli id wybranego biegu.
+
+Zrzuty w tabeli powyżej pochodzą (ekrany z danymi przykładowymi, jeszcze bez zapisu). Zrzuty działającej aplikacji z trwałym zapisem są w sekcji T5.
 
 **Dlaczego taki układ nawigacji jest odpowiedni dla użytkownika?**
 
-[uzupełnij]
-
+Lista biegów jest ekranem startowym, bo biegacz najczęściej chce zobaczyć swoje biegi. Szczegóły i formularz są ekranami "wyżej" na stosie, więc zawsze można z nich wrócić jednym ruchem (strzałka w nagłówku albo gest od lewej krawędzi na iPhonie). Dzięki temu aplikacja zachowuje się tak, jak użytkownik zna z innych aplikacji na telefonie. Ekrany czytają dane z lokalnego zapisu (przez stan aplikacji), a formularz zapisuje nowy bieg, więc użytkownik od razu widzi go na liście.
 ## T4. Operacje Create i Read
 
 **Cel:** implementacja pierwszych operacji CRUD z trwałym przechowywaniem danych.
@@ -131,56 +143,75 @@ Zaimplementuj:
 - odczyt i wyświetlenie listy rekordów;
 - otwarcie szczegółów wybranego rekordu.
 
-**Powiązanie z wymaganiami biznesowymi (ID wymagań):** [uzupełnij]
+**Powiązanie z wymaganiami biznesowymi (ID wymagań):** [MOB-012-FR-01 (tylko dodawanie i wyświetlanie biegu), FR-03 (przypisanie biegu do trasy), FR-04 (lista i szczegóły), FR-08 (walidacja), FR-09 (komunikaty błędów i pusta lista), FR-11 (dane po ponownym uruchomieniu); reguły BR-01 (czas dodatni), BR-03 (daty i liczby), BR-04 (bieg tylko z istniejącą trasą).]
 
 | Operacja         | Lokalizacja kodu | Reguła walidacji / zachowanie | Wynik |
 | ---------------- | ---------------- | ----------------------------- | ----- |
-| Create           | [ ]              | [ ]                           | [ ]   |
-| Read (lista)     | [ ]              | [ ]                           | [ ]   |
-| Read (szczegóły) | [ ]              | [ ]                           | [ ]   |
+| Create | [`DiaryContext.tsx`](../src/state/DiaryContext.tsx) (`addRun`), [`validation.ts`](../src/domain/validation.ts) (`validateRunInput`), [`asyncStorageRepository.ts`](../src/data/asyncStorageRepository.ts) (`addRun`) | Wymagane: trasa, data (`RRRR-MM-DD`, istniejący dzień), czas (liczba większa od zera). Uwagi opcjonalne. Błędne dane: zapis zablokowany i komunikaty pod polami | Bieg zapisany i widoczny na liście (TC-01 PASS); pusty formularz zablokowany (TC-02 PASS) |
+| Read (lista) | [`RunListScreen.tsx`](../src/screens/RunListScreen.tsx), [`DiaryContext.tsx`](../src/state/DiaryContext.tsx) (wczytanie przy starcie), [`asyncStorageRepository.ts`](../src/data/asyncStorageRepository.ts) (`getRuns`) | "Ładowanie…" na starcie, komunikat przy błędzie wczytania, "Brak biegów…" przy pustej liście | Lista z zapisu, po restarcie nadal jest (TC-04 PASS), pusta lista z komunikatem (TC-05 PASS) |
+| Read (szczegóły) | [`RunDetailsScreen.tsx`](../src/screens/RunDetailsScreen.tsx) | Bieg znajdowany po `runId`; gdy go nie ma: "Nie znaleziono biegu." | Poprawne dane biegu i trasy (TC-03 PASS) |
 
 **Wyjaśnij przepływ danych po naciśnięciu przycisku „Zapisz”:**
 
-[od UI przez logikę i repozytorium do zapisu, a następnie odświeżenia widoku]
+1. W `RunFormScreen` naciskam "Zapisz", co wywołuje `addRun(input)` z `useDiary()`. W trakcie zapisu przycisk jest zablokowany.
+2. `DiaryProvider.addRun` wywołuje `validateRunInput`. Przy błędach zwraca je ekranowi (czerwone komunikaty) i niczego nie zapisuje.
+3. Przy poprawnych danych tworzy `Run`: nowe `id` z `newId()` (`expo-crypto`), czas zamieniony na liczbę, puste uwagi pomijane.
+4. `asyncStorageRepository.addRun` sprawdza, czy trasa istnieje (BR-04), czyta zapisane biegi i zapisuje całą listę jako JSON pod kluczem `runningdiary:runs` w AsyncStorage.
+5. Stan czyta biegi z zapisu na nowo (`getRuns`), więc lista odświeża się sama, a formularz się zamyka (`goBack`). Gdy zapis się nie uda, pod przyciskiem pojawia się komunikat, a formularz zostaje otwarty.
+
+Ten sam przepływ jest opisany na diagramie w [docs/architecture.md](../docs/architecture.md).
 
 ## T5. Weryfikacja działania i wnioski
 
 Przeprowadź testy manualne i podaj rzeczywiste wyniki.
 
-| ID    | Scenariusz                           | Oczekiwany rezultat             | Wynik (PASS/FAIL) | Dowód / uwagi |
-| ----- | ------------------------------------ | ------------------------------- | ----------------- | ------------- |
-| TC-01 | Dodanie poprawnego rekordu           | Rekord jest zapisany i widoczny | [ ]               | [ ]           |
-| TC-02 | Próba zapisu pustego wymaganego pola | Zapis zablokowany, komunikat    | [ ]               | [ ]           |
-| TC-03 | Otwarcie szczegółów rekordu          | Poprawne dane rekordu           | [ ]               | [ ]           |
-| TC-04 | Ponowne uruchomienie aplikacji       | Rekord pozostaje dostępny       | [ ]               | [ ]           |
-| TC-05 | Brak rekordów                        | Czytelny stan pustej listy      | [ ]               | [ ]           |
+| ID | Scenariusz | Oczekiwany rezultat | Wynik (PASS/FAIL) | Dowód / uwagi |
+| -- | ---------- | ------------------- | ----------------- | ------------- |
+| TC-01 | Dodanie poprawnego rekordu | Rekord jest zapisany i widoczny | [PASS] | ![TC-01](assets/lab-02/TC-01.jpg) |
+| TC-02 | Próba zapisu pustego wymaganego pola | Zapis zablokowany, komunikat | [PASS] | ![TC-02](assets/lab-02/TC-02.png) |
+| TC-03 | Otwarcie szczegółów rekordu | Poprawne dane rekordu | [PASS] | ![TC-03](assets/lab-02/TC-03.png) |
+| TC-04 | Ponowne uruchomienie aplikacji | Rekord pozostaje dostępny | [PASS] | ![TC-04](assets/lab-02/TC-04.png) |
+| TC-05 | Brak rekordów | Czytelny stan pustej listy | [PASS] | ![TC-05](assets/lab-02/TC-05.png). Pustą listę uzyskałem, czyszcząc zapis na telefonie tymczasowym plikiem, bo usuwania biegu w aplikacji jeszcze nie ma |
+
+TC-01.jpg i TC-04.png to te same zrzuty ale oba pasują do TC_1 i TC_4 ponieważ jeden to ekran główny jak i również po restarcie aplikacji.
 
 **Najważniejszy napotkany problem i sposób rozwiązania:**
 
-[uzupełnij]
+`src/domain/types.ts` polecenie `npx tsc --noEmit` zgłosiło błąd `TS1005: '}' expected`.Zabrakło ostatniej linii `};`, która zamyka typ `Run`. Dopisałem ją i `tsc` przeszedł bez błędów. Tymczasowy skrypt sprawdzający uruchamiany przez `tsx` działał mimo tego błędu, bo `tsx` nie sprawdza typów. Dlatego po każdym pliku uruchamiałem też `tsc`. Tak to nie było więcej błedów
 
 **Co wymaga dalszej pracy przed laboratorium 3?**
 
-[uzupełnij]
+- tworzenie i edycja tras (na razie są tylko trzy trasy demonstracyjne) oraz walidacja trasy (nazwa, dystans większy od zera);
+- edycja i usuwanie biegów z potwierdzeniem;
+- blokada usunięcia trasy, do której są przypisane biegi (BR-04);
+- wyszukiwanie, filtrowanie i sortowanie listy biegów;
+- obliczanie tempa i podsumowanie (FR-10);
+- testy automatyczne: co najmniej jedna reguła biznesowa z testem pozytywnym i negatywnym;
+- sprawdzenie aplikacji na Androidzie.
 
 **Wnioski (3–6 zdań, odnoszące się do własnej implementacji):**
 
-[uzupełnij]
+Zaimplementowałem trzy ekrany z nawigacją oraz dodawanie i odczyt biegów z trwałym zapisem w AsyncStorage. Kod podzieliłem na warstwy (domena, dane, stan, ekrany), dzięki czemu ekrany nie wiedzą, jak dane są zapisane, a walidacja jest w jednym miejscu. Stan trzymam w React Context bez dodatkowej biblioteki, bo przy tej skali aplikacji wystarczył. Testy ręczne TC-01 do TC-05 na iPhonie w Expo Go zakończyły się wynikiem PASS. Ograniczeniem jest zakres: nie ma jeszcze edycji i usuwania, tras własnych, tempa ani testów automatycznych, a aplikację sprawdzałem tylko na jednym telefonie.
 
 ## Materiały dowodowe i historia pracy
 
-- Issue(s): [linki]
-- Pull Request(s): [linki]
-- Commity związane z laboratorium: [SHA / linki]
-- Diagramy: [ścieżki]
-- Zrzuty ekranu: [ścieżki, np. `reports/assets/lab-02/`]
-- Instrukcja uruchomienia: [link do README]
+- Issue(s): [uzupełnię po sprawdzeniu]
+- Pull Request(s): [uzupełnię po sprawdzeniu] (branch `feature/lab-02-stage1`)
+- Commity związane z laboratorium:
+  - [`a53db3e`](https://github.com/rulax113/ProjektSemestralny2027/commit/a53db3ee1c4628c929d03f0152fa29b648a84a4f): feat: add route and run models with validation
+  - [`39d3783`](https://github.com/rulax113/ProjektSemestralny2027/commit/39d37830250c0a6f7285441b7dfaf794d4ef198b): feat: add local storage and UUID generation
+  - [`6e071ba`](https://github.com/rulax113/ProjektSemestralny2027/commit/6e071bac01bf98e4463313701f21d79102a8ca14): feat: add navigation and three run screens
+  - [`cd60fb6`](https://github.com/rulax113/ProjektSemestralny2027/commit/cd60fb6c146d36fc17714d4ec13a77efc0e3cac5): feat: connect screens to local storage and app state
+  - commit z dokumentacją i sprawozdaniem: [uzupełnię po commicie]
+- Diagramy: [docs/architecture.md](../docs/architecture.md) (architektura), schemat nawigacji w sekcji T3 tego sprawozdania
+- Zrzuty ekranu: [reports/assets/lab-02/](assets/lab-02/)
+- Instrukcja uruchomienia: [README](../README.md)
 
 
 ## Użycie narzędzi AI (jeżeli dotyczy)
 
-**Narzędzie i zakres wsparcia:** [np. wyjaśnienie błędu konfiguracji / propozycja porównania]  
-**Jak zweryfikowano wynik:** [dokumentacja, uruchomienie, test]  
-**Elementy wykonane samodzielnie:** [opis]
+**Narzędzie i zakres wsparcia:** Korzystałem z ChatGPT i Claude’a. Prosiłem je o wyjaśnianie wymagań, propozycje kodu i pomoc przy błędach. Kod z odpowiedzi wklejałem do projektu, a następnie dostosowywałem do swoich potrzeb. Niektóre propozycje zawierały błędy, które sprawdzałem i poprawiałem podczas uruchamiania aplikacji. 
+**Jak zweryfikowano wynik:** `npx tsc --noEmit` po kolejnych plikach, uruchomienie aplikacji w Expo Go na iPhonie, testy ręczne TC-01 do TC-05, sprawdzenie dokumentacji bibliotek, przeczytanie i poprawienie tekstów dokumentacji.  
+**Elementy wykonane samodzielnie:** Sam wybierałem rozwiązania, uruchamiałem aplikację, poprawiałem błędy w kodzie i uruchamianiu, wykonywałem testy ręczne, obsługiwałem repozytorium GitHub commity branche. 
 
 **Warunki formalne:** sprawozdanie w Markdown, czytelne odnośniki do działającego kodu i diagramów, zrzuty ekranu renderujące się w repozytorium, identyfikacja autora i projektu. Oceniana jest zarówno implementacja, jak i zdolność wyjaśnienia własnych decyzji. Brak dowodów wykonania może ograniczyć liczbę punktów.
