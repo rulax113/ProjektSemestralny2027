@@ -6,7 +6,8 @@
 **Framework:** React Native + Expo + TypeScript 
 **Data zajęć:** [05.11.2026]  
 **Repozytorium:** [github.com/rulax113/ProjektSemestralny2027](https://github.com/rulax113/ProjektSemestralny2027)  
-**Commit / tag odpowiadający oddaniu:** [`cd60fb6`](https://github.com/rulax113/ProjektSemestralny2027/commit/cd60fb6c146d36fc17714d4ec13a77efc0e3cac5) (ostatni commit z kodem laboratorium 2); finalny commit z dokumentacją lub merge PR: []
+**Commit / tag odpowiadający oddaniu:** [`cd60fb6`](https://github.com/rulax113/ProjektSemestralny2027/commit/cd60fb6c146d36fc17714d4ec13a77efc0e3cac5) (ostatni commit z kodem laboratorium 2); 
+**Finalny commit z dokumentacją lub merge PR:** [merge PR #1 — 712d6ac](https://github.com/rulax113/ProjektSemestralny2027/commit/712d6ac)
 
 > Wypełnij na podstawie własnych działań. Odpowiedzi powinny zawierać dowody (pliki, commity, PR, wyniki uruchomienia), nie same deklaracje.
 
@@ -202,7 +203,7 @@ Zaimplementowałem trzy ekrany z nawigacją oraz dodawanie i odczyt biegów z tr
   - [`39d3783`](https://github.com/rulax113/ProjektSemestralny2027/commit/39d37830250c0a6f7285441b7dfaf794d4ef198b): feat: add local storage and UUID generation
   - [`6e071ba`](https://github.com/rulax113/ProjektSemestralny2027/commit/6e071bac01bf98e4463313701f21d79102a8ca14): feat: add navigation and three run screens
   - [`cd60fb6`](https://github.com/rulax113/ProjektSemestralny2027/commit/cd60fb6c146d36fc17714d4ec13a77efc0e3cac5): feat: connect screens to local storage and app state
-  - commit z dokumentacją i sprawozdaniem: [uzupełnię po commicie]
+  - commit z dokumentacją i sprawozdaniem: [`9c882e0`](https://github.com/rulax113/ProjektSemestralny2027/commit/9c882e0689695ef5dcf51ae32a3ad1b1e4e1cd29)
 - Diagramy: [docs/architecture.md](../docs/architecture.md) (architektura), schemat nawigacji w sekcji T3 tego sprawozdania
 - Zrzuty ekranu: [reports/assets/lab-02/](assets/lab-02/)
 - Instrukcja uruchomienia: [README](../README.md)
