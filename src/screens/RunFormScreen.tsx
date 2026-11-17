@@ -1,7 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useState } from 'react';
 import {
-  Alert,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -10,18 +9,14 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { demoRoutes } from '../data/demoRoutes';
-import {
-  hasErrors,
-  RunFormErrors,
-  RunFormInput,
-  validateRunInput,
-} from '../domain/validation';
+import { hasErrors, RunFormErrors, RunFormInput } from '../domain/validation';
 import { RootStackParamList } from '../navigation/types';
+import { useDiary } from '../state/DiaryContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'RunForm'>;
 
 export default function RunFormScreen({ navigation }: Props) {
+  const { routes, addRun } = useDiary();
   const [input, setInput] = useState<RunFormInput>({
     parentId: '',
     date: '',
@@ -29,43 +24,57 @@ export default function RunFormScreen({ navigation }: Props) {
     notes: '',
   });
   const [errors, setErrors] = useState<RunFormErrors>({});
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   // Zmienia jedno pole formularza.
   function update(field: keyof RunFormInput, value: string) {
     setInput((current) => ({ ...current, [field]: value }));
   }
 
-  function handleSave() {
-    const found = validateRunInput(input, demoRoutes);
-    setErrors(found);
-    if (hasErrors(found)) {
+  async function handleSave() {
+    if (saving) {
       return;
     }
-    Alert.alert('Dane poprawne', 'Zapis do pamięci telefonu podłączymy w etapie 4.', [
-      { text: 'OK', onPress: () => navigation.goBack() },
-    ]);
+    setSaving(true);
+    setSaveError(null);
+    try {
+      const found = await addRun(input);
+      setErrors(found);
+      if (!hasErrors(found)) {
+        navigation.goBack();
+      }
+    } catch {
+      setSaveError('Nie udało się zapisać biegu. Spróbuj ponownie.');
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['bottom', 'left', 'right']}>
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         <Text style={styles.label}>TRASA</Text>
-        <View style={styles.chips}>
-          {demoRoutes.map((route) => {
-            const selected = input.parentId === route.id;
-            return (
-              <Pressable
-                key={route.id}
-                style={[styles.chip, selected ? styles.chipSelected : null]}
-                onPress={() => update('parentId', route.id)}
-              >
-                <Text style={[styles.chipText, selected ? styles.chipTextSelected : null]}>
-                  {route.name}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </View>
+        {routes.length === 0 ? (
+          <Text style={styles.hint}>Brak tras do wyboru.</Text>
+        ) : (
+          <View style={styles.chips}>
+            {routes.map((route) => {
+              const selected = input.parentId === route.id;
+              return (
+                <Pressable
+                  key={route.id}
+                  style={[styles.chip, selected ? styles.chipSelected : null]}
+                  onPress={() => update('parentId', route.id)}
+                >
+                  <Text style={[styles.chipText, selected ? styles.chipTextSelected : null]}>
+                    {route.name}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+        )}
         {errors.parentId ? <Text style={styles.error}>{errors.parentId}</Text> : null}
 
         <Text style={styles.label}>DATA</Text>
@@ -101,9 +110,14 @@ export default function RunFormScreen({ navigation }: Props) {
           multiline
         />
 
-        <Pressable style={styles.button} onPress={handleSave}>
-          <Text style={styles.buttonText}>Zapisz</Text>
+        <Pressable
+          style={[styles.button, saving ? styles.buttonDisabled : null]}
+          onPress={handleSave}
+          disabled={saving}
+        >
+          <Text style={styles.buttonText}>{saving ? 'Zapisywanie…' : 'Zapisz'}</Text>
         </Pressable>
+        {saveError ? <Text style={styles.error}>{saveError}</Text> : null}
       </ScrollView>
     </SafeAreaView>
   );
@@ -120,6 +134,7 @@ const styles = StyleSheet.create({
     marginTop: 22,
     marginBottom: 8,
   },
+  hint: { color: '#8a958d', fontSize: 14 },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   chip: {
     backgroundColor: '#fff',
@@ -151,5 +166,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 30,
   },
+  buttonDisabled: { opacity: 0.6 },
   buttonText: { color: '#fff', fontSize: 16, fontWeight: '700' },
 });

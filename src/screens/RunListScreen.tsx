@@ -1,16 +1,44 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { routeNameById, sampleRuns } from '../dev/sampleData';
 import { RootStackParamList } from '../navigation/types';
+import { useDiary } from '../state/DiaryContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'RunList'>;
 
 export default function RunListScreen({ navigation }: Props) {
+  const { routes, runs, loading, error } = useDiary();
+
+  // Nazwa trasy dla biegu (szukamy wśród tras z zapisu).
+  function routeName(routeId: string): string {
+    const route = routes.find((item) => item.id === routeId);
+    return route ? route.name : 'Nieznana trasa';
+  }
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.center}>
+          <Text style={styles.emptyText}>Ładowanie…</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  if (error) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.center}>
+          <Text style={styles.errorText}>{error}</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <FlatList
-        data={sampleRuns}
+        data={runs}
         keyExtractor={(run) => run.id}
         contentContainerStyle={styles.container}
         ListHeaderComponent={
@@ -33,7 +61,7 @@ export default function RunListScreen({ navigation }: Props) {
             style={styles.card}
             onPress={() => navigation.navigate('RunDetails', { runId: item.id })}
           >
-            <Text style={styles.cardTitle}>{routeNameById(item.parentId)}</Text>
+            <Text style={styles.cardTitle}>{routeName(item.parentId)}</Text>
             <Text style={styles.cardMeta}>
               {item.date} · {item.durationMin} min
             </Text>
@@ -51,6 +79,7 @@ export default function RunListScreen({ navigation }: Props) {
 
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: '#f4f6f2' },
+  center: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24 },
   container: { padding: 24, paddingTop: 32, paddingBottom: 16 },
   eyebrow: { color: '#587462', fontSize: 11, fontWeight: '700', letterSpacing: 1.5 },
   title: { color: '#172b21', fontSize: 36, fontWeight: '800', marginTop: 10 },
@@ -67,6 +96,7 @@ const styles = StyleSheet.create({
   cardTitle: { color: '#1d3427', fontSize: 17, fontWeight: '700' },
   cardMeta: { color: '#68766e', fontSize: 14, marginTop: 6 },
   emptyText: { color: '#8a958d', fontSize: 14, lineHeight: 21 },
+  errorText: { color: '#b3402f', fontSize: 14, lineHeight: 21, textAlign: 'center' },
   footer: {
     padding: 16,
     backgroundColor: '#f4f6f2',

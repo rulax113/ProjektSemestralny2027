@@ -1,15 +1,15 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { demoRoutes } from '../data/demoRoutes';
-import { sampleRuns } from '../dev/sampleData';
 import { RootStackParamList } from '../navigation/types';
+import { useDiary } from '../state/DiaryContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'RunDetails'>;
 
 export default function RunDetailsScreen({ route }: Props) {
   const { runId } = route.params;
-  const run = sampleRuns.find((item) => item.id === runId);
+  const { routes, runs } = useDiary();
+  const run = runs.find((item) => item.id === runId);
 
   if (!run) {
     return (
@@ -21,7 +21,7 @@ export default function RunDetailsScreen({ route }: Props) {
     );
   }
 
-  const runRoute = demoRoutes.find((item) => item.id === run.parentId);
+  const runRoute = routes.find((item) => item.id === run.parentId);
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['bottom', 'left', 'right']}>
