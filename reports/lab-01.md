@@ -3,9 +3,9 @@
 **Student:** Dominik Ruszkiewicz  
 **Projekt:** MOB-012 — RunningDiary  
 **Framework:** React Native + Expo + TypeScript (decyzja wstępna)  
-**Data:** [4.11.2026]  
+**Data:** [22.10.2026]  
 **Repozytorium:** [[](https://github.com/rulax113/ProjektSemestralny2027.git)]  
-**Commit / PR:** [uzupełnij po utworzeniu]
+**Commit / PR:** [(https://github.com/rulax113/ProjektSemestralny2027/commit/1ef1b93751fbe486ec95703bb6c68546f84d2432)]
 
 ## 1. Cel laboratorium
 
@@ -23,7 +23,7 @@ Porównanie: `docs/technology-comparison.md`. Uzasadnienie decyzji: `docs/techno
 | Windows | 11 | 
 | Node.js | 24.22.1 | npm |
 | Expo / Android |EXPO | |
-| VS Code / Git | [uzupełnij] | |
+| VS Code / Git |  | |
 
 Polecenia są opisane w README. Wynik uruchomienia.
 
